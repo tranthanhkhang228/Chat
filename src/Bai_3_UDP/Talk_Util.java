@@ -9,6 +9,7 @@ public class Talk_Util {
     static byte[] buffer = new byte[6000];
 
     public static DatagramPacket receive(DatagramSocket ds) {
+
         DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
         try {
             ds.receive(incoming);

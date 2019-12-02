@@ -1,40 +1,29 @@
 package Bai_3_UDP;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.InetAddress;
 
 public class User {
     private String userName;
     private int port;
-    private Map<String, Integer> receiveMessage = new HashMap<>();
+    private InetAddress address;
 
-    public User(String userName, int port) {
+    public User(String userName, int port, InetAddress address) {
         this.userName = userName;
         this.port = port;
+        this.address = address;
     }
 
-    public Map<String, Integer> getReceiveMessage() {
-        return receiveMessage;
+    public InetAddress getAddress() {
+        return address;
     }
 
-    public void setReceiveMessage(Map<String, Integer> receiveMessage) {
-        this.receiveMessage = receiveMessage;
+    public void setAddress(InetAddress address) {
+        this.address = address;
     }
 
-    public void addMessage(String message, int userSend) {
-        this.receiveMessage.put(message, userSend);
-    }
-
-    public void removeMessage(String key) {
-        this.receiveMessage.remove(key);
-    }
 
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public int getPort() {

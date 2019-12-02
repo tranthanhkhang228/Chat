@@ -3,6 +3,7 @@ package Bai_3_UDP;
 import java.io.IOException;
 import java.net.*;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Talk_Server {
@@ -21,12 +22,46 @@ public class Talk_Server {
     public void execute() {
         try {
             DatagramSocket ds = new DatagramSocket(this.port);
+            String userName = "";
 
-            new S_ReceiveMessage(ds, this).start();
-            new S_SendMessage(ds, this).start();
+            while (true) {
+                DatagramPacket incoming = Talk_Util.receive(ds);
+                String message = new String(incoming.getData(), 0, incoming.getLength());
 
-            // duy tri server
-            while (true) {}
+                userName = message;
+
+                // kiem tra xem user co trong danh sach chua
+                boolean check = false;
+                Iterator<User> userList;
+                userList = this.userList.iterator();
+                while (userList.hasNext()) {
+                    User temp = userList.next();
+                    if (userName.equals(temp.getUserName())) {
+                        // neu co roi thi cap nhat lai port cho user
+                        check = true;
+                        temp.setPort(incoming.getPort());
+                        temp.setAddress(incoming.getAddress());
+                        break;
+                    }
+                }
+
+                // neu chua co thi them user vao danh sach
+                if (!check) {
+                    User newUser = new User(userName, incoming.getPort(), incoming.getAddress());
+                    synchronized (this.userList) {
+                        this.userList.add(newUser);
+                    }
+                }
+
+                // thong bao user da ket noi toi server
+                System.out.println(userName + " connected");
+
+                DatagramSocket temp_ds = new DatagramSocket();
+                String notice = "Dang nhap thanh cong";
+                Talk_Util.send(temp_ds, notice.getBytes(), notice.length(), incoming.getAddress(), incoming.getPort());
+
+                new S_Send(temp_ds, incoming, this).start();
+            }
         } catch (IOException e) {
             System.err.println(e);
         }

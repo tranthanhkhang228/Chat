@@ -5,9 +5,11 @@ import java.net.DatagramSocket;
 
 public class ReceiveMessage extends Thread {
     protected DatagramSocket ds;
+    private String userName;
 
-    public ReceiveMessage(DatagramSocket ds) {
+    public ReceiveMessage(DatagramSocket ds, String userName) {
         this.ds = ds;
+        this.userName = userName;
     }
 
     public void run() {
@@ -15,7 +17,9 @@ public class ReceiveMessage extends Thread {
         do {
             DatagramPacket incoming = Talk_Util.receive(this.ds);
             message = new String(incoming.getData(), 0, incoming.getLength());
-            System.out.println(message);
+
+            System.out.println("\n" + message);
+            System.out.print(userName + ": ");
         } while (!message.equals("bye"));
     }
 }

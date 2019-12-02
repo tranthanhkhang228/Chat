@@ -23,28 +23,25 @@ public class SendMessage extends Thread {
 
         System.out.print("Enter your name: ");
         userName = sc.nextLine();
-        userName = "new" + userName;
         byte[] data = userName.getBytes();
         Talk_Util.send(this.ds, data, data.length, this.address, this.serverPort);
 
         String message;
 
-        // nhan danh sach user dang ket noi
         DatagramPacket incoming = Talk_Util.receive(this.ds);
         message = new String(incoming.getData(), 0, incoming.getLength());
+        int port = incoming.getPort();
         System.out.println(message);
 
         // nhan tin nhan sau khi dang nhap
-        new ReceiveMessage(ds).start();
+        new ReceiveMessage(ds, userName).start();
 
-        // gui tin nhan sau khi dang nhap
-        userName = userName.substring(3);
         while(true) {
             System.out.print(userName + ": ");
             message = sc.nextLine();
             message = userName + ": " + message;
             data =  message.getBytes();
-            Talk_Util.send(this.ds, data, data.length, this.address, this.serverPort);
+            Talk_Util.send(this.ds, data, data.length, this.address, port);
         }
     }
 }
